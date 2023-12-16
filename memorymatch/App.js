@@ -2,6 +2,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import { useReducer } from 'react';
 
+import Card from './Card';
+import Row from './Row';
+
 const SYMBOLS = ['a', 'b', 'c'];
 
 function reducer(state, action) {
@@ -42,6 +45,14 @@ function swap(arr, i, j) {
   [arr[i], arr[j]] = [arr[j], arr[i]];
 }
 
+function setUpRows(board, lengthOfRow) {
+  let rows = [];
+  for(let i =0; i < board.length; i += lengthOfRow) {
+    rows.push(<Row key={"rows " + i} lengthOfRow={lengthOfRow} symbols={board.slice(i, i + lengthOfRow)}/>);
+  }
+  return rows;
+}
+
 export default function App() {
   const [state, dispatch] = useReducer(reducer, undefined, getNewState);
 
@@ -49,6 +60,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Button title={"Make A Guess"} onPress={() => dispatch({type: 'make-a-guess'})}></Button>
+      {setUpRows(state.board, 3)}
       <Text>{JSON.stringify(state, null, 2)}</Text>
       <Button title={"Reset Game"} onPress={() => dispatch({type: 'reset-game'})}></Button>
       <StatusBar style="auto" />
